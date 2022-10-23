@@ -5,25 +5,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UnistringsGenerator {
-    public static void main(String[] args) {
-        UnistringsGenerator generator = new UnistringsGenerator();
-        System.out.println(generator.calcPerms("qwrer", 1, 2));
-        Set<String> resset = new HashSet<>();
-        for (int i = 1; i <= 2; i++) {
-            generator.buildCombinations("qwer".toCharArray(),"qwer".length(),
-                    i, 0, new char[i], 0, resset);
-        }
-        System.out.println(resset);
-        System.out.println(generator.checkIfPossible("qwer", 5, 1, 2));
+
+    public Set<String> generate(String str, int min, int max, int quan) {
+        if (this.checkIfPossible(str, quan, min, max))
+            this.buildUniqueSet(str, min, max, quan);
+
+        return this.resultSet;
     }
 
-    public boolean isReady() {
-        return isSetReady;
+    public void clearResultSet() {
+        resultSet.clear();
     }
 
     //only for using in objects of this class
     //
     private Set<String> resultSet = new HashSet<>();
+
+    private void buildUniqueSet(String str, int min, int max, int quan) {
+        for (int i = min; i <= max; i++)
+            this.buildCombinations(str.toCharArray(), str.length(),
+                    i, 0, new char[i], 0, this.resultSet, quan);
+    }
 
     private boolean checkIfPossible(String str, int quan, int min, int max) {
         if (min > max) return false; //return exception message
@@ -35,22 +37,10 @@ public class UnistringsGenerator {
         return true;
     }
 
-    private boolean isSetReady = false;
-
     private int factorial(int n) {
         if (n <= 2) return n;
 
         return n * factorial(n - 1);
-    }
-
-    private int countChar(char ch, String str) {
-        int count = 0;
-        char[] chars = str.toCharArray();
-        for (char aChar : chars) {
-            if (aChar == ch) count++;
-        }
-
-        return count;
     }
 
     private String buildUniqueCharsSequence(String str) {
@@ -73,34 +63,22 @@ public class UnistringsGenerator {
     }
 
     private void buildCombinations(char[] arr, int n, int r,
-                                        int index, char[] data, int i, Set<String> resset) {
+                                        int index, char[] data, int i,
+                                            Set<String> resset, int quan) {
         if (index == r) {
             resset.add(Arrays.toString(data));
 
             return;
         }
 
+        if (resset.size()==quan) return;
+
         if (i >= n) return;
 
         data[index] = arr[i];
         buildCombinations(arr, n, r, index + 1,
-                data, i + 1, resset);
+                data, i + 1, resset, quan);
 
-        buildCombinations(arr, n, r, index, data, i + 1, resset);
-    }
-
-    private void buildPermuts(String str, String ans, Set<String> result) {
-        if (str.length() == 0) {
-            result.add(ans);
-
-            return;
-        }
-
-        for (int i = 0; i < str.length(); i++) {
-            char ch = str.charAt(i);
-            String ros = str.substring(0, i) +
-                    str.substring(i + 1);
-            buildPermuts(ros, ans + ch, result);
-        }
+        buildCombinations(arr, n, r, index, data, i + 1, resset, quan);
     }
 }
