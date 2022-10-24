@@ -11,7 +11,7 @@ class GeneratorTests {
     private UnistringsGenerator generator = new UnistringsGenerator();
 
     @Test
-    void correctSizeOfSet() {
+    void generatorShouldReturnCorrectSizeOfSet() {
         if (generator.generate("qwer", 1, 2, 6).size() != 6) throw new AssertionError();
         generator.clearResultSet();
         if (generator.generate("qwe", 2, 2, 2).size() != 2) throw new AssertionError();
@@ -19,12 +19,12 @@ class GeneratorTests {
     }
 
     @Test
-    void correctExceptionThrowing() {
+    void generatorShouldTrowsCorrectExceptions() {
         try {
             generator.generate("qwe", 2, 2, 25);
         } catch (ParametersDataException e) {
             generator.clearResultSet();
-            assert e.getMessage().equals(generator.getErrMessage());
+            assert e.getMessage().equals(generator.getErrorMessage());
             assert e.getMessage().equals("Max quantity of permutations of the unique char sequence " +
                     "from requested string < requested quantity");
         }

@@ -12,7 +12,7 @@ public class UnistringsGenerator {
         try {
             this.checkIfPossible(str, quantity, min, max);
         } catch (ParametersDataException e) {
-            this.errMessage = e.getMessage();
+            this.errorMessage = e.getMessage();
             return this.resultSet;
         }
         this.buildUniqueSet(str, min, max, quantity);
@@ -23,13 +23,13 @@ public class UnistringsGenerator {
         resultSet.clear();
     }
 
-    public String getErrMessage() {
-        return errMessage;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     //only for using in objects of this class
     //
-    private String errMessage;
+    private String errorMessage;
 
     private Set<String> resultSet = new HashSet<>();
 
