@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -14,6 +15,8 @@ public class Task {
     @Getter
     private final Integer userId;
 
+    @Getter
+    private final Integer taskId;
     private final String str;
     private final int min;
     private final int max;
@@ -34,20 +37,24 @@ public class Task {
         Thread thread = new Thread() {
             @Override
             public synchronized void start() {
-                run();
+                super.start();
+                //run();
             }
 
             @Override
             public void run() {
                 UnistringsGenerator generator = new UnistringsGenerator();
                 try {
-                    resultSet.addAll(generator.generate(str, min, max, quantity));
-                    status = TaskStatus.COMPLETED;
-                    //to delete
-                    System.out.println("result set: "+resultSet);
+                    resultSet = generator.generate(str, min, max, quantity);
+                    Optional<String> optional = Optional.ofNullable(generator.getErrorMessage());
+                    if (optional.isPresent()) status = TaskStatus.FAILED;
+                    else status = TaskStatus.COMPLETED;
                 } catch (ParametersDataException pde) {
                     status = TaskStatus.FAILED;
                     generator.clearResultSet();
+                } finally {
+                    //to delete
+                    System.out.println("result set: "+resultSet+" status: "+status);
                 }
             }
         };
