@@ -41,15 +41,20 @@ public class UnistringsGenerator {
 
     private void checkIfPossible(String str, int quantity, int min, int max) {
         if (min > max) {
+            errorMessage = "Min size of requested strings is bigger then max";
             throw new ParametersDataException("Min size of requested strings is bigger then max");
         }
         String ustr = buildUniqueCharsSequence(str);
         if (ustr.length() < max) {
+            errorMessage = "Max size of requested strings " +
+                    "is bigger then unique char sequence length";
             throw new ParametersDataException("Max size of requested strings " +
                     "is bigger then unique char sequence length");
         }
         int maxuperms = calculatePermutations(ustr, min, max);
         if (maxuperms < quantity) {
+            errorMessage = "Max quantity of permutations of the unique char sequence " +
+                    "from requested string < requested quantity";
             throw new ParametersDataException("Max quantity of permutations of the unique char sequence " +
                     "from requested string < requested quantity");
         }
@@ -75,7 +80,8 @@ public class UnistringsGenerator {
     private int calculatePermutations(String str, int min, int max) {
         int res = 0;
         for (int i = min; i <= max; i++) {
-            res+=factorial(str.length())/(factorial(i)*factorial(str.length()-i));
+            if (i==max) res+=factorial(i);
+            else res+=factorial(str.length())/(factorial(i)*factorial(str.length()-i));
         }
 
         return res;

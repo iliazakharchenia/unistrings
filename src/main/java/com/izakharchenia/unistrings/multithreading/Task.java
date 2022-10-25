@@ -23,6 +23,9 @@ public class Task {
     private final int quantity;
 
     @Getter
+    private StringBuilder errorMessage = new StringBuilder();
+
+    @Getter
     private TaskStatus status;
 
     @Getter
@@ -47,14 +50,15 @@ public class Task {
                 try {
                     resultSet = generator.generate(str, min, max, quantity);
                     Optional<String> optional = Optional.ofNullable(generator.getErrorMessage());
-                    if (optional.isPresent()) status = TaskStatus.FAILED;
+                    if (optional.isPresent()) {
+                        status = TaskStatus.FAILED;
+                        errorMessage.append(optional.get());
+                    }
                     else status = TaskStatus.COMPLETED;
                 } catch (ParametersDataException pde) {
                     status = TaskStatus.FAILED;
+                    errorMessage.append(pde.getMessage());
                     generator.clearResultSet();
-                } finally {
-                    //to delete
-                    System.out.println("result set: "+resultSet+" status: "+status);
                 }
             }
         };

@@ -2,12 +2,13 @@ package com.izakharchenia.unistrings;
 
 import com.izakharchenia.unistrings.multithreading.TaskStatus;
 import com.izakharchenia.unistrings.multithreading.TasksManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MultithreadingTests {
+class TaskManagerTests {
 
     @Autowired
     private TasksManager tasksManager;
@@ -27,9 +28,18 @@ class MultithreadingTests {
     }
 
     @Test
-    void taskShouldReturnCorrectTaskStatus() {
+    void taskManagerShouldReturnCorrectTaskStatus() {
+        assert tasksManager.getTask(1, 123).get().getStatus()==TaskStatus.COMPLETED;
+    }
+
+    @Test
+    void taskManagerShouldReturnDataWithCorrectSizeOfSet() {
+        assert tasksManager.getTask(1, 123).get().getResultSet().size()==4;
+    }
+
+    @BeforeEach
+    void addTask() {
         tasksManager.addTask(123, "qwer", 1, 2, 4);
-        assert tasksManager.getCurrentTasks().get(123).get(0).getStatus()==TaskStatus.IN_PROGRESS;
     }
 
 }
